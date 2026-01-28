@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Kunden-Konfigurator – Template Intake (Drag&Drop, Service-Bilder, Extra-Seiten)</title>
+  <style>
+    :root{--bg:#fff;--fg:#0f172a;--muted:#475569;--card:#f8fafc;--border:#e2e8f0;--good:#16a34a;--bad:#dc2626;}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:24px;max-width:1120px;color:var(--fg);background:var(--bg)}
+    h1{font-size:28px;margin:0 0 6px}
+    p{color:var(--muted);line-height:1.5}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:1040px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+    label{display:block;margin-top:10px;font-weight:900}
+    input, textarea, select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:12px;margin-top:6px;background:#fff}
+    textarea{min-height:110px;resize:vertical}
+    .hint{color:var(--muted);margin-top:6px;font-size:13px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:720px){.row{grid-template-columns:1fr}}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button{padding:12px 16px;border:0;border-radius:14px;cursor:pointer;font-weight:900}
+    button.primary{background:#0f172a;color:#fff}
+    button.secondary{background:#e2e8f0;color:#0f172a}
+    button.danger{background:#fee2e2;color:#991b1b}
+    .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .kpi{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+    .kpi.good{border-color:#86efac}
+    .kpi.bad{border-color:#fecaca}
+    pre{background:#0b1220;color:#e5e7eb;border-radius:16px;padding:12px;overflow:auto;font-size:12px}
+    .mini{font-size:12px;color:var(--muted)}
+    .req{color:var(--bad)}
+    .ok{color:var(--good);font-weight:900}
+    .warn{color:#b45309;font-weight:900}
+
+    .svc{border:1px solid var(--border);background:#fff;border-radius:16px;padding:12px;margin-top:12px}
+    .svc .top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+    .svc h3{margin:0}
+    .handle{cursor:grab;user-select:none;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;font-size:12px}
+    .dragging{opacity:.5}
+    .drop-hint{border:2px dashed #94a3b8}
+    .pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:4px 8px;background:#fff}
+    .files{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:1040px){.files{grid-template-columns:1fr}}
+
+    details{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px;margin-top:10px}
+    summary{cursor:pointer;font-weight:900}
+  </style>
+</head>
+<body>
+  <h1>Kunden-Konfigurator</h1>
+  <p>
+    Kunde füllt online aus → Export <b>intake.zip</b> (customer.json + Bilder) → lokaler Build erzeugt komplette Website:
+    Startseite + Leistungsübersicht + Service-Unterseiten + Über uns + Kontakt + <b>FAQ-Seite</b> (alle Fragen gesammelt).
+  </p>
+  <p class="mini">Pflichtfelder sind mit <span class="req">*</span> markiert. Export blockiert, wenn Pflichtfelder fehlen.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2 style="margin:0 0 10px">1) Basisdaten</h2>
+
+      <div class="row">
+        <div>
+          <label>Firmenname <span class="req">*</span></label>
+          <input id="name" placeholder="Muster Reinigung GmbH">
+        </div>
+        <div>
+          <label>Hauptkategorie (Google Business) <span class="req">*</span></label>
+          <input id="gbpCategory" placeholder="Gebäudereinigungsdienst">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Domain (ohne https) <span class="req">*</span></label>
+          <input id="domain" placeholder="muster-reinigung.de">
+        </div>
+        <div>
+          <label>Google Maps URL</label>
+          <input id="maps" placeholder="https://maps.app.goo.gl/...">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>E-Mail <span class="req">*</span></label>
+          <input id="email" placeholder="info@muster-reinigung.de">
+        </div>
+        <div>
+          <label>Telefon <span class="req">*</span></label>
+          <input id="phone" placeholder="+49 89 123456">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Straße + Nr. <span class="req">*</span></label>
+          <input id="street" placeholder="Musterstraße 1">
+        </div>
+        <div>
+          <label>PLZ <span class="req">*</span></label>
+          <input id="zip" placeholder="80331">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Ort <span class="req">*</span></label>
+          <input id="city" placeholder="München">
+        </div>
+        <div>
+          <label>Service Areas (Orte, kommagetrennt)</label>
+          <input id="areas" placeholder="München, Dachau, Umgebung">
+          <div class="hint">Wird strukturiert gespeichert (Schema areaServed + Google Business).</div>
+        </div>
+      </div>
+
+      <label>Google Business Beschreibung (empf. 250–750 Zeichen)</label>
+      <textarea id="gbpDescription" placeholder="Kurz, klar, lokal. Leistungen + Einsatzgebiet + USP."></textarea>
+      <div class="kpis">
+        <span class="kpi" id="gbpDescKpi"></span>
+        <span class="pill">Empfehlung: 250–750 Zeichen</span>
+      </div>
+
+      <details>
+        <summary>Google Business Extras</summary>
+        <div class="row">
+          <div>
+            <label>Attribute (je Zeile 1 Attribut)</label>
+            <textarea id="gbpAttributes" placeholder="z.B. Kostenlose Beratung&#10;Notfallservice&#10;Rechnung möglich"></textarea>
+            <div class="hint">Wird in google-business.txt ausgegeben (Copy/Paste).</div>
+          </div>
+          <div>
+            <label>Öffnungszeiten pro Wochentag (Schema-ready)</label>
+            <div class="mini">Format: HH:MM, leere Felder = geschlossen</div>
+            <div class="row">
+              <div><label>Mo</label><input id="mon" placeholder="08:00–18:00"></div>
+              <div><label>Di</label><input id="tue" placeholder="08:00–18:00"></div>
+            </div>
+            <div class="row">
+              <div><label>Mi</label><input id="wed" placeholder="08:00–18:00"></div>
+              <div><label>Do</label><input id="thu" placeholder="08:00–18:00"></div>
+            </div>
+            <div class="row">
+              <div><label>Fr</label><input id="fri" placeholder="08:00–18:00"></div>
+              <div><label>Sa</label><input id="sat" placeholder=""></div>
+            </div>
+            <div class="row">
+              <div><label>So</label><input id="sun" placeholder=""></div>
+              <div><label>Freitext (optional)</label><input id="hoursText" placeholder="Mo–Fr 08:00–18:00"></div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px">2) Menü / Begriffe</h2>
+
+      <div class="row">
+        <div>
+          <label>Menü: Leistungen <span class="req">*</span></label>
+          <input id="navServices" value="Leistungen">
+        </div>
+        <div>
+          <label>Menü: Über uns <span class="req">*</span></label>
+          <input id="navAbout" value="Über uns">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Menü: Kontakt <span class="req">*</span></label>
+          <input id="navContact" value="Kontakt">
+        </div>
+        <div>
+          <label>Menü: FAQ (optional)</label>
+          <input id="navFaq" value="FAQ">
+        </div>
+      
+      <details>
+        <summary>Menü-Sichtbarkeit (optional)</summary>
+        <p class="mini">Hier kannst du einzelne Seiten im Menü ausblenden. Die Seiten werden trotzdem erstellt.</p>
+        <div class="row">
+          <div><label><input type="checkbox" id="visHome" checked> Start anzeigen</label></div>
+          <div><label><input type="checkbox" id="visServices" checked> Leistungen anzeigen</label></div>
+        </div>
+        <div class="row">
+          <div><label><input type="checkbox" id="visAbout" checked> Über uns anzeigen</label></div>
+          <div><label><input type="checkbox" id="visContact" checked> Kontakt anzeigen</label></div>
+        </div>
+        <div class="row">
+          <div><label><input type="checkbox" id="visFaq" checked> FAQ anzeigen</label></div>
+          <div><label><input type="checkbox" id="visImprint" checked> Impressum anzeigen</label></div>
+        </div>
+        <div class="row">
+          <div><label><input type="checkbox" id="visPrivacy" checked> Datenschutz anzeigen</label></div>
+        </div>
+      </details>
+
+
+      <h2 style="margin:16px 0 10px">3) SEO – Startseite</h2>
+
+      <label>SEO Title <span class="req">*</span> <span class="mini">(empf. 50–60 Zeichen)</span></label>
+      <input id="seoTitle" placeholder="Muster Reinigung GmbH – Gebäudereinigung in München">
+      <div class="kpis"><span class="kpi" id="titleKpi"></span></div>
+
+      <label>Meta Description <span class="req">*</span> <span class="mini">(empf. 150–160 Zeichen)</span></label>
+      <textarea id="seoDesc" placeholder="Professionelle Gebäudereinigung in München: Büro, Praxis, Treppenhaus, Glas. Angebot in 24h."></textarea>
+      <div class="kpis"><span class="kpi" id="descKpi"></span></div>
+
+      <label>Canonical <span class="req">*</span></label>
+      <input id="canonical" placeholder="https://muster-reinigung.de/">
+
+      <h2 style="margin:16px 0 10px">4) Uploads (optional, empfohlen)</h2>
+      <div class="files">
+        <div>
+          <label>Logo (SVG empfohlen, max 300 KB)</label>
+          <input id="fileLogo" type="file" accept=".svg,image/png,image/webp">
+        </div>
+        <div>
+          <label>OG-Image (1200×630, max 500 KB)</label>
+          <input id="fileOg" type="file" accept="image/png,image/webp">
+        </div>
+      </div>
+      <div class="files">
+        <div>
+          <label>Hero-Bild (1600×900, max 800 KB)</label>
+          <input id="fileHero" type="file" accept="image/webp,image/jpeg,image/png">
+        </div>
+        <div>
+          <label>Favicon PNG (optional, 512×512, max 200 KB)</label>
+          <input id="fileFavicon" type="file" accept="image/png,image/webp">
+        </div>
+      </div>
+
+      <details>
+        <summary>Extra Seiten (mit eigenem SEO)</summary>
+
+        <h3 style="margin:10px 0 6px">Über uns Seite</h3>
+        <label>SEO Title (Über uns)</label>
+        <input id="aboutTitle" placeholder="Über uns – Muster Reinigung GmbH">
+        <label>Meta Description (Über uns)</label>
+        <textarea id="aboutDesc" placeholder="Kurze Beschreibung, Vertrauen, Team, Werte."></textarea>
+        <label>Content (Über uns)</label>
+        <textarea id="aboutContent" placeholder="Text über das Unternehmen (einfacher Text – Zeilenumbrüche werden übernommen)"></textarea>
+
+        <h3 style="margin:10px 0 6px">Kontakt Seite</h3>
+        <label>SEO Title (Kontakt)</label>
+        <input id="contactTitle" placeholder="Kontakt – Muster Reinigung GmbH">
+        <label>Meta Description (Kontakt)</label>
+        <textarea id="contactDesc" placeholder="Kontakt aufnehmen, Angebot anfragen, Reaktionszeit."></textarea>
+        <label>Content (Kontakt)</label>
+        <textarea id="contactContent" placeholder="Kurzer Text, wie man euch erreicht (einfacher Text – Zeilenumbrüche werden übernommen)"></textarea>
+        <div class="row">
+          <div>
+            <label>CTA Button Text (Kontakt)</label>
+            <input id="contactCtaLabel" placeholder="Anfrage senden">
+          </div>
+          <div>
+            <label>CTA Button Link (Kontakt)</label>
+            <input id="contactCtaHref" placeholder="#anfrage">
+            <div class="hint">z.B. #anfrage (Kontakt-Abschnitt) oder mailto:..., oder eine Formular-URL.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>WhatsApp Nummer (optional, international)</label>
+            <input id="waNumber" placeholder="+491701234567">
+          </div>
+          <div>
+            <label>WhatsApp Startnachricht (optional)</label>
+            <input id="waMessage" placeholder="Hallo, ich hätte gerne ein Angebot...">
+          </div>
+        </div>
+
+        <h3 style="margin:10px 0 6px">FAQ Seite (automatisch aus allen Service-FAQs)</h3>
+        <label>SEO Title (FAQ)</label>
+        <input id="faqTitle" placeholder="FAQ – Muster Reinigung GmbH">
+        <label>Meta Description (FAQ)</label>
+        <textarea id="faqDesc" placeholder="Antworten auf häufige Fragen rund um Reinigung, Ablauf, Angebot."></textarea>
+      
+      <details>
+        <summary>Rechtliches (Impressum & Datenschutz)</summary>
+        <label>Verantwortliche Person (optional)</label>
+        <input id="legalResponsible" placeholder="Max Mustermann">
+        <label>USt-IdNr. (optional)</label>
+        <input id="legalVat" placeholder="DE123456789">
+        <label>Hosting-Anbieter</label>
+        <input id="legalHosting" placeholder="GitHub Pages">
+        <p class="mini">Diese Daten werden automatisch in Impressum & Datenschutzerklärung eingesetzt.</p>
+      </details>
+
+
+      <div class="btns">
+        <button class="secondary" id="downloadJson">customer.json herunterladen</button>
+        <button class="primary" id="exportZip">✅ Export intake.zip</button>
+      </div>
+      <div class="hint" id="status"></div>
+      <div class="hint"><b>Impressum/Datenschutz:</b> Die Seite übernimmt automatisch Firmen-/Kontaktdaten aus den Feldern. Bitte rechtlich prüfen lassen (Tools, Hosting, Tracking, Maps etc.).</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2 style="margin:0 0 10px">5) Services (Drag&Drop Reihenfolge, pro Service eigenes Bild)</h2>
+    <p class="mini">
+      Ziehe die Services am Griff (⠿), um die Reihenfolge im Menü & auf der Leistungsübersicht zu bestimmen.
+      Pro Service kannst du ein Bild hochladen – es wird automatisch der Unterseite zugeordnet.
+    </p>
+
+    <div class="btns">
+      <button class="primary" id="addService">➕ Service hinzufügen</button>
+    </div>
+
+    <div id="services"></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2 style="margin:0 0 10px">Vorschau (customer.json)</h2>
+    <pre id="preview"></pre>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const LIMITS = { logo: 300*1024, og: 500*1024, hero: 800*1024, favicon: 200*1024, serviceImg: 600*1024 };
+
+function baseUrlFromDomain(domain){
+  if(!domain) return "";
+  if(domain.startsWith("http://") || domain.startsWith("https://")) return domain.replace(/\/$/,"");
+  return ("https://" + domain).replace(/\/$/,"");
+}
+
+function slugify(s){
+  return (s||"")
+    .toLowerCase()
+    .trim()
+    .replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss")
+    .replace(/[^a-z0-9\s-]/g,"")
+    .replace(/\s+/g,"-")
+    .replace(/-+/g,"-");
+}
+
+function setKpi(node, ok, text){
+  node.textContent = text;
+  node.className = "kpi " + (ok ? "good" : "bad");
+}
+
+function refreshKpis(){
+  const t = $("seoTitle").value.trim().length;
+  setKpi($("titleKpi"), t>=45 && t<=65, `${t} Zeichen · empf. 50–60`);
+  const d = $("seoDesc").value.trim().length;
+  setKpi($("descKpi"), d>=120 && d<=170, `${d} Zeichen · empf. 150–160`);
+  const g = $("gbpDescription").value.trim().length;
+  const ok = (g===0) || (g>=250 && g<=750);
+  setKpi($("gbpDescKpi"), ok, `${g} Zeichen · empf. 250–750`);
+}
+
+function parseHoursRange(s){
+  // "08:00–18:00" or "08:00-18:00"
+  const m = (s||"").trim().match(/^\s*(\d{2}:\d{2})\s*[–-]\s*(\d{2}:\d{2})\s*$/);
+  if(!m) return null;
+  return {opens:m[1], closes:m[2]};
+}
+
+function openingHoursWeekly(){
+  const map = {mon:"mon",tue:"tue",wed:"wed",thu:"thu",fri:"fri",sat:"sat",sun:"sun"};
+  const out = {};
+  for(const id of Object.keys(map)){
+    const v = parseHoursRange($(id).value);
+    if(v) out[id] = v;
+  }
+  return out;
+}
+
+// --- Drag&Drop services ---
+let dragEl = null;
+
+function makeDraggable(card){
+  card.draggable = true;
+
+  card.addEventListener("dragstart", (e)=>{
+    dragEl = card;
+    card.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+  });
+
+  card.addEventListener("dragend", ()=>{
+    card.classList.remove("dragging");
+    document.querySelectorAll(".svc").forEach(n => n.classList.remove("drop-hint"));
+    dragEl = null;
+    refresh();
+  });
+
+  card.addEventListener("dragover", (e)=>{
+    e.preventDefault();
+    if(!dragEl || dragEl === card) return;
+    card.classList.add("drop-hint");
+  });
+
+  card.addEventListener("dragleave", ()=>{
+    card.classList.remove("drop-hint");
+  });
+
+  card.addEventListener("drop", (e)=>{
+    e.preventDefault();
+    if(!dragEl || dragEl === card) return;
+    card.classList.remove("drop-hint");
+    const parent = card.parentNode;
+    const cards = Array.from(parent.querySelectorAll(".svc"));
+    const dropIndex = cards.indexOf(card);
+    const dragIndex = cards.indexOf(dragEl);
+    if(dragIndex < dropIndex){
+      parent.insertBefore(dragEl, card.nextSibling);
+    } else {
+      parent.insertBefore(dragEl, card);
+    }
+  });
+}
+
+function servicesNodes(){
+  return Array.from(document.querySelectorAll("[data-svc]"));
+}
+
+function buildServices(){
+  const items = [];
+  for(const node of servicesNodes()){
+    const id = node.getAttribute("data-svc");
+
+    const name = node.querySelector(`[data-name="${id}"]`).value.trim();
+    if(!name) continue;
+
+    const menuLabel = node.querySelector(`[data-menulabel="${id}"]`).value.trim();
+    const lead = node.querySelector(`[data-lead="${id}"]`).value.trim();
+    const snippet = node.querySelector(`[data-snippet="${id}"]`).value.trim();
+    const content = node.querySelector(`[data-content="${id}"]`).value.trim();
+
+    const seoTitle = node.querySelector(`[data-seotitle="${id}"]`).value.trim();
+    const seoDesc = node.querySelector(`[data-seodesc="${id}"]`).value.trim();
+
+    const faq = [];
+    for(let i=1;i<=3;i++){
+      const q = node.querySelector(`[data-faq${i}q="${id}"]`).value.trim();
+      const a = node.querySelector(`[data-faq${i}a="${id}"]`).value.trim();
+      if(q && a) faq.push({q,a});
+    }
+
+    const slug = slugify(name);
+    const url = `leistungen-${slug}.html`;
+
+    // service image file (kept in DOM for export)
+    const imgInput = node.querySelector(`[data-img="${id}"]`);
+    const hasImg = imgInput && imgInput.files && imgInput.files[0];
+    const imgFile = hasImg ? imgInput.files[0] : null;
+    const imgPath = imgFile ? `/assets/img/services/${slug}` : null; // ext appended in export
+
+    items.push({
+      _id: id,
+      name,
+      menuLabel: menuLabel || name,
+      slug,
+      url,
+      lead,
+      snippet,
+      content: content ? content.replace(/\n/g,"<br>") : "",
+      faq,
+      _page: { template:"service-page.njk", out:url, title:seoTitle, description:seoDesc },
+      _imgFile: imgFile,
+      _imgPathBase: imgPath
+    });
+  }
+  return items;
+}
+
+function buildConfig(){
+  const domain = $("domain").value.trim();
+  const baseUrl = baseUrlFromDomain(domain);
+  const canonical = $("canonical").value.trim() || (baseUrl ? baseUrl + "/" : "");
+  const city = $("city").value.trim();
+  const name = $("name").value.trim();
+  const mapsUrl = $("maps").value.trim();
+  const areas = $("areas").value.trim();
+
+  const services = buildServices();
+
+  const cfg = {
+    brand: {
+      name,
+      domain: domain.replace(/^https?:\/\//,"").replace(/\/$/,""),
+      baseUrl,
+      logoPath: "/assets/img/logo.svg",
+      ogImagePath: "/assets/img/og-image.png",
+      sameAs: mapsUrl ? [mapsUrl] : []
+    },
+    contact: {
+      email: $("email").value.trim(),
+      phone: $("phone").value.trim()
+    },
+    address: {
+      street: $("street").value.trim(),
+      zip: $("zip").value.trim(),
+      city,
+      country: "DE"
+    },
+    navigation: {
+      labels: {
+        services: $("navServices").value.trim() || "Leistungen",
+        about: $("navAbout").value.trim() || "Über uns",
+        contact: $("navContact").value.trim() || "Kontakt",
+        faq: $("navFaq").value.trim() || "FAQ"
+      }, visibility:{ home: $("visHome").checked, services:$("visServices").checked, about:$("visAbout").checked, contact:$("visContact").checked, faq:$("visFaq").checked, imprint:$("visImprint").checked, privacy:$("visPrivacy").checked       },
+      show: {
+        services: $("showServices").checked,
+        about: $("showAbout").checked,
+        contact: $("showContact").checked,
+        faq: $("showFaq").checked
+      },
+      build: {
+        services: $("buildServices")?.checked ?? true,
+        about: $("buildAbout")?.checked ?? true,
+        contact: $("buildContact")?.checked ?? true,
+        faq: $("buildFaq")?.checked ?? true
+      }
+    },
+    gbp: {
+      category: $("gbpCategory").value.trim(),
+      description: $("gbpDescription").value.trim(),
+      mapsUrl: mapsUrl || "",
+      areasServed: areas ? areas.split(",").map(s=>s.trim()).filter(Boolean) : [],
+      attributes: ($("gbpAttributes").value || "").split("\n").map(s=>s.trim()).filter(Boolean),
+      openingHoursWeekly: openingHoursWeekly(),
+      openingHoursText: $("hoursText").value.trim()
+    },
+    schema: { type: "LocalBusiness" },
+    services: services.map(s => ({
+      name: s.name,
+      menuLabel: s.menuLabel,
+      slug: s.slug,
+      url: s.url,
+      lead: s.lead,
+      snippet: s.snippet,
+      content: s.content,
+      faq: s.faq,
+      image: s._imgPathBase ? (s._imgPathBase + ".webp") : null, // default ext
+      cardImage: s._imgPathBase ? (s._imgPathBase + ".webp") : null
+    })),
+    about: { content: ($("aboutContent").value || "").trim().replace(/\n/g,"<br>") },
+    legal:{ responsible: $("legalResponsible").value.trim(), vatId: $("legalVat").value.trim(), hosting: $("legalHosting").value.trim() },
+    contactPage: {
+      content: ($("contactContent").value || "").trim().replace(/
+/g,"<br>"),
+      cta: { label: $("contactCtaLabel").value.trim(), href: $("contactCtaHref").value.trim() },
+      whatsapp: { number: $("waNumber").value.trim(), message: $("waMessage").value.trim() }
+    },
+    pages: {},
+    i18n: { lang: "de" }
+  };
+
+  // Pages: index + leistungen + about + contact + faq + service pages
+  cfg.pages["index.njk"] = {
+    out:"index.html",
+    title: $("seoTitle").value.trim(),
+    description: $("seoDesc").value.trim(),
+    canonical: canonical
+  };
+
+  if ($("buildServices").checked) {
+    cfg.pages["leistungen.njk"] = {
+      out:"leistungen.html",
+      title: `${cfg.navigation.labels.services} – ${cfg.brand.name}`,
+      description: `Leistungen von ${cfg.brand.name} in ${cfg.address.city} & Umgebung. Jetzt Angebot anfragen.`,
+      canonical: `${cfg.brand.baseUrl}/leistungen.html`
+    };
+  } else {
+    // if page not built, hide menu entry
+    cfg.navigation.show.services = false;
+  }
+
+  if ($("buildAbout").checked) {
+    cfg.pages["about-page.njk"] = {
+      template:"about-page.njk",
+      out:"ueber-uns.html",
+      title: ($("aboutTitle").value.trim() || `${cfg.navigation.labels.about} – ${cfg.brand.name}`),
+      description: ($("aboutDesc").value.trim() || `Erfahre mehr über ${cfg.brand.name} – Qualität, Zuverlässigkeit und Service in ${cfg.address.city}.`),
+      canonical: `${cfg.brand.baseUrl}/ueber-uns.html`
+    };
+  } else {
+    cfg.navigation.show.about = false;
+  }
+
+  if ($("buildContact").checked) {
+    cfg.pages["contact-page.njk"] = {
+      template:"contact-page.njk",
+      out:"kontakt.html",
+      title: ($("contactTitle").value.trim() || `${cfg.navigation.labels.contact} – ${cfg.brand.name}`),
+      description: ($("contactDesc").value.trim() || `Kontakt zu ${cfg.brand.name}: Angebot anfragen, Rückruf erhalten, schnell erreichbar.`),
+      canonical: `${cfg.brand.baseUrl}/kontakt.html`
+    };
+  } else {
+    cfg.navigation.show.contact = false;
+  }
+
+  if ($("buildFaq").checked) {
+    cfg.pages["faq.njk"] = {
+      template:"faq.njk",
+      out:"faq.html",
+      title: ($("faqTitle").value.trim() || `${cfg.navigation.labels.faq} – ${cfg.brand.name}`),
+      description: ($("faqDesc").value.trim() || `Antworten auf häufige Fragen zu Leistungen, Ablauf und Angebot von ${cfg.brand.name}.`),
+      canonical: `${cfg.brand.baseUrl}/faq.html`,
+      _faqAll: true
+    };
+  } else {
+    cfg.navigation.show.faq = false;
+  }
+
+  // service pages
+  for(const s of services){
+    const pageTitle = s._page.title || `${s.name} – ${cfg.address.city} | ${cfg.brand.name}`;
+    const pageDesc = s._page.description || `Professionelle ${s.name} in ${cfg.address.city} & Umgebung. Angebot in 24h – jetzt anfragen.`;
+    cfg.pages[`service-page.njk::${s.slug}`] = {
+      template: "service-page.njk",
+      out: s.url,
+      title: pageTitle,
+      description: pageDesc,
+      canonical: `${cfg.brand.baseUrl}/${s.url}`,
+      _serviceSlug: s.slug
+    };
+  }
+
+  return {cfg, services};
+}
+
+function validateConfig(cfg){
+  const missing = [];
+  const must = (p) => {
+    const parts = p.split(".");
+    let cur = cfg;
+    for(const k of parts){
+      if(cur && Object.prototype.hasOwnProperty.call(cur,k)) cur = cur[k];
+      else {cur=null;break;}
+    }
+    if(!cur) missing.push(p);
+  };
+  ["brand.name","brand.domain","brand.baseUrl","contact.email","contact.phone","address.street","address.zip","address.city","gbp.category","pages.index.njk.title","pages.index.njk.description","pages.index.njk.canonical"].forEach(must);
+  return {missing};
+}
+
+function refresh(){
+  const {cfg} = buildConfig();
+  $("preview").textContent = JSON.stringify(cfg, null, 2);
+  refreshKpis();
+}
+document.querySelectorAll("input,textarea,select").forEach(i => i.addEventListener("input", refresh));
+
+function addServiceCard(prefill){
+  const id = String(Date.now()) + String(Math.random()).slice(2,6);
+  const wrap = document.createElement("div");
+  wrap.className = "svc";
+  wrap.setAttribute("data-svc", id);
+
+  wrap.innerHTML = `
+    <div class="top">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="handle" title="Ziehen zum Sortieren">⠿ Reihenfolge</span>
+        <h3>Service</h3>
+      </div>
+      <button class="danger" type="button" data-remove="${id}">Entfernen</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Service-Name <span class="req">*</span></label>
+        <input data-name="${id}" placeholder="z.B. Büro- und Praxisreinigung">
+        <div class="hint">URL wird automatisch: leistungen-<b>slug</b>.html</div>
+      </div>
+      <div>
+        <label>Menü-/Karten-Label (optional)</label>
+        <input data-menulabel="${id}" placeholder="z.B. Büroreinigung">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Service-Bild (optional) <span class="mini">(empf. 1200×800, WebP/PNG/JPG, max 600 KB)</span></label>
+        <input data-img="${id}" type="file" accept="image/webp,image/png,image/jpeg">
+        <div class="hint">Wird gespeichert unter <b>assets/img/services/&lt;slug&gt;.&lt;ext&gt;</b> und automatisch der Unterseite zugeordnet.</div>
+      </div>
+      <div>
+        <label>Kurz-Teaser (Karte)</label>
+        <input data-snippet="${id}" placeholder="1 Satz, Nutzen + Ort">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Lead (oben auf Seite)</label>
+        <input data-lead="${id}" placeholder="2–3 Sätze, vertrauensbildend">
+      </div>
+      <div>
+        <label>Content (optional)</label>
+        <textarea data-content="${id}" placeholder="Ablauf, Vorteile, Zielgruppen..."></textarea>
+      </div>
+    </div>
+
+    <details>
+      <summary>SEO & FAQ (für Google)</summary>
+      <label>SEO Title (optional, sonst automatisch)</label>
+      <input data-seotitle="${id}" placeholder="z.B. Büroreinigung München – Muster Reinigung GmbH">
+      <label>Meta Description (optional, sonst automatisch)</label>
+      <textarea data-seodesc="${id}" placeholder="Empf. 150–160 Zeichen."></textarea>
+
+      <h4 style="margin:12px 0 6px">FAQ (3 Fragen empfohlen – wird zusätzlich auf globaler FAQ-Seite gesammelt)</h4>
+      <div class="row">
+        <div><input data-faq1q="${id}" placeholder="Frage 1"></div>
+        <div><input data-faq1a="${id}" placeholder="Antwort 1"></div>
+      </div>
+      <div class="row">
+        <div><input data-faq2q="${id}" placeholder="Frage 2"></div>
+        <div><input data-faq2a="${id}" placeholder="Antwort 2"></div>
+      </div>
+      <div class="row">
+        <div><input data-faq3q="${id}" placeholder="Frage 3"></div>
+        <div><input data-faq3a="${id}" placeholder="Antwort 3"></div>
+      </div>
+    </details>
+  `;
+
+  $("services").appendChild(wrap);
+  makeDraggable(wrap);
+
+  wrap.querySelectorAll("input,textarea").forEach(el => el.addEventListener("input", refresh));
+  wrap.querySelector(`[data-remove="${id}"]`).addEventListener("click", ()=>{
+    wrap.remove();
+    refresh();
+  });
+
+  if(prefill){
+    for(const [k,v] of Object.entries(prefill)){
+      const el = wrap.querySelector(`[data-${k}="${id}"]`);
+      if(el) el.value = v;
+    }
+  }
+  refresh();
+}
+
+$("addService").addEventListener("click", ()=> addServiceCard());
+
+// Initial guidance
+addServiceCard({name:"Büro- und Praxisreinigung", menulabel:"Büro & Praxis", snippet:"Gründlich, diskret und zuverlässig – Angebot in 24h."});
+addServiceCard({name:"Glas- und Fensterreinigung", menulabel:"Glasreinigung", snippet:"Streifenfrei, regelmäßig oder einmalig – innen & außen."});
+addServiceCard({name:"Treppenhausreinigung", menulabel:"Treppenhaus", snippet:"Saubere Eingänge für Mieter & Besucher – feste Intervalle."});
+
+function downloadBlob(name, blob){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function fileOk(file, maxBytes){
+  if(!file) return {ok:true};
+  if(file.size > maxBytes){
+    return {ok:false, msg:`Datei zu groß: ${(file.size/1024).toFixed(0)} KB (max ${(maxBytes/1024).toFixed(0)} KB)`};
+  }
+  return {ok:true};
+}
+
+$("downloadJson").addEventListener("click", ()=>{
+  const {cfg} = buildConfig();
+  const blob = new Blob([JSON.stringify(cfg, null, 2)], {type:"application/json"});
+  downloadBlob("customer.json", blob);
+});
+
+async function exportZip(){
+  const {cfg, services} = buildConfig();
+  const {missing} = validateConfig(cfg);
+  const status = $("status");
+  status.innerHTML = "";
+
+  if(missing.length){
+    status.innerHTML = `<span class="warn">Bitte Pflichtfelder ausfüllen:</span><br>` + missing.map(m=>`• ${m}`).join("<br>");
+    return;
+  }
+
+  // Global files
+  const logo = $("fileLogo").files[0];
+  const og = $("fileOg").files[0];
+  const hero = $("fileHero").files[0];
+  const fav = $("fileFavicon").files[0];
+
+  // size checks
+  const checks = [];
+  if(logo) checks.push(fileOk(logo, LIMITS.logo));
+  if(og) checks.push(fileOk(og, LIMITS.og));
+  if(hero) checks.push(fileOk(hero, LIMITS.hero));
+  if(fav) checks.push(fileOk(fav, LIMITS.favicon));
+
+  // per-service images
+  for(const s of services){
+    if(s._imgFile) checks.push(fileOk(s._imgFile, LIMITS.serviceImg));
+  }
+
+  const bad = checks.find(c=>!c.ok);
+  if(bad){ status.innerHTML = `<span class="warn">${bad.msg}</span>`; return; }
+
+  const zip = new JSZip();
+  zip.file("customer.json", JSON.stringify(cfg, null, 2));
+
+  const assets = zip.folder("assets");
+  const img = assets.folder("img");
+  const svcImg = img.folder("services");
+
+  // write files
+  const addFile = (folder, filename, file) => folder.file(filename, file);
+
+  if(logo){
+    const ext = logo.name.toLowerCase().endsWith(".svg") ? "svg" : (logo.type.includes("webp") ? "webp" : "png");
+    addFile(img, `logo.${ext}`, logo);
+  }
+  if(og){
+    const ext = og.type.includes("webp") ? "webp" : "png";
+    addFile(img, `og-image.${ext}`, og);
+  }
+  if(hero){
+    const ext = hero.type.includes("webp") ? "webp" : (hero.type.includes("png") ? "png" : "jpg");
+    addFile(img, `hero-cleaning.${ext}`, hero);
+  }
+  if(fav){
+    const ext = fav.type.includes("webp") ? "webp" : "png";
+    addFile(img, `favicon.${ext}`, fav);
+  }
+
+  // per service images
+  for(const s of services){
+    if(!s._imgFile) continue;
+    const f = s._imgFile;
+    const ext = f.type.includes("webp") ? "webp" : (f.type.includes("png") ? "png" : "jpg");
+    addFile(svcImg, `${s.slug}.${ext}`, f);
+
+    // adjust cfg paths to correct ext
+    const svc = cfg.services.find(x => x.slug === s.slug);
+    if(svc){
+      svc.image = `/assets/img/services/${s.slug}.${ext}`;
+      svc.cardImage = `/assets/img/services/${s.slug}.${ext}`;
+    }
+  }
+
+  zip.file("README.txt",
+`Website Intake Export
+====================
+Enthält:
+- customer.json (komplett: SEO, Menülabels, Services + Unterseiten + Extra-Seiten, Google Business Extras)
+- assets/img/... (Uploads inkl. services/<slug>.<ext>)
+
+Nächster Schritt (lokal):
+npm install
+npm run build -- --intake intake.zip
+`);
+
+  // overwrite customer.json with adjusted paths
+  zip.file("customer.json", JSON.stringify(cfg, null, 2));
+
+  const blob = await zip.generateAsync({type:"blob"});
+  downloadBlob("intake.zip", blob);
+  status.innerHTML = `<span class="ok">Export fertig.</span>`;
+}
+
+$("exportZip").addEventListener("click", exportZip);
+
+function syncBuildToggles(){
+  const bs = $("buildServices")?.checked ?? true;
+  const ba = $("buildAbout")?.checked ?? true;
+  const bc = $("buildContact")?.checked ?? true;
+  const bf = $("buildFaq")?.checked ?? true;
+
+  if(!bs) $("showServices").checked = false;
+  if(!ba) $("showAbout").checked = false;
+  if(!bc) $("showContact").checked = false;
+  if(!bf) $("showFaq").checked = false;
+}
+
+["buildServices","buildAbout","buildContact","buildFaq"].forEach(id=>{
+  const el = $(id);
+  if(el) el.addEventListener("change", ()=>{ syncBuildToggles(); refresh(); });
+});
+syncBuildToggles();
+
+// initial render
+refresh();
+
+</script>
+</body>
+</html>
