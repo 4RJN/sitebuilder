@@ -94,7 +94,91 @@
     .handle{cursor:grab;user-select:none;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;font-size:12px}
     .pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:4px 8px;background:#fff}
     .divider{height:1px;background:var(--border);margin:14px 0}
-  </style>
+  
+    /* ===========================
+       Theme Picker Preview
+    =========================== */
+    .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:720px){.theme-grid{grid-template-columns:1fr}}
+    .swatch{display:flex;align-items:center;gap:10px}
+    .chip{width:22px;height:22px;border-radius:8px;border:1px solid var(--border);background:#fff}
+    .mini-card{border-radius:18px;border:1px solid var(--border);padding:14px;background:var(--card)}
+    .mini-title{font-weight:900;margin:0 0 6px}
+    .mini-muted{color:var(--muted);margin:0 0 10px;line-height:1.4}
+    .mini-btns{display:flex;gap:10px;flex-wrap:wrap}
+    .mini-btn{padding:10px 12px;border-radius:14px;border:0;font-weight:900;cursor:pointer}
+    .mini-btn.primary{background:var(--primary);color:var(--onPrimary)}
+    .mini-btn.accent{background:var(--accent);color:var(--onAccent)}
+    .mini-pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:12px}
+
+
+    /* ===========================
+       Mini Website Preview (Theme)
+    =========================== */
+    .site-preview{
+      border:1px solid var(--border);
+      border-radius:22px;
+      overflow:hidden;
+      background:var(--bg);
+      color:var(--fg);
+      box-shadow: 0 8px 28px rgba(0,0,0,.08);
+    }
+    .pv-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 14px;
+      background:var(--card);
+      border-bottom:1px solid var(--border);
+    }
+    .pv-brand{
+      display:flex;align-items:center;gap:10px;font-weight:950
+    }
+    .pv-dot{width:12px;height:12px;border-radius:6px;background:var(--accent)}
+    .pv-nav{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+    .pv-nav span{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.75)}
+    .pv-hero{padding:18px 14px}
+    .pv-kicker{font-size:12px;color:var(--muted);margin:0 0 6px}
+    .pv-h1{font-size:18px;margin:0 0 8px;font-weight:950;line-height:1.2}
+    .pv-p{margin:0 0 12px;color:var(--muted);line-height:1.35;font-size:12px}
+    .pv-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .pv-btn{padding:10px 12px;border-radius:14px;border:0;font-weight:950;cursor:pointer}
+    .pv-btn.primary{background:var(--primary);color:var(--onPrimary)}
+    .pv-btn.accent{background:var(--accent);color:var(--onAccent)}
+    .pv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 14px}
+    .pv-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:12px;
+    }
+    .pv-card h4{margin:0 0 6px;font-size:13px}
+    .pv-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
+    .pv-foot{
+      padding:12px 14px;
+      background:var(--card);
+      border-top:1px solid var(--border);
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      font-size:12px;color:var(--muted)
+    }
+
+
+    /* ===========================
+       Theme Helpers (Warnings/Actions)
+    =========================== */
+    .warn{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--muted)}
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--border);border:1px solid var(--border)}
+    .dot.ok{background:#22c55e;border-color:#22c55e}
+    .dot.mid{background:#f59e0b;border-color:#f59e0b}
+    .dot.bad{background:#ef4444;border-color:#ef4444}
+    .theme-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn-soft{padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:#fff;font-weight:900;cursor:pointer}
+    .btn-soft:hover{filter:brightness(.98)}
+    .theme-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .theme-row select,.theme-row input{flex:1;min-width:200px}
+
+</style>
 
 <script type="application/ld+json">
 {
@@ -227,7 +311,178 @@
       <label>Canonical (Startseite) <span class="req">*</span></label>
       <input id="canonical" placeholder="https://muster-reinigung.de/">
 
+      
+
       <div class="divider"></div>
+
+      <div class="step"><span class="num">3A</span><h2>Design & Farben (Theme)</h2></div>
+      <p class="hint">
+        Wähle ein passendes Farbschema (inkl. Komplementär-/Akzentfarben) oder passe es manuell an.
+        Die Vorschau zeigt dir sofort, wie Buttons, Karten und Text später wirken.
+      </p>
+
+      <label>Theme Preset</label>
+      <select id="themePreset">
+        <option value="midnight_mint">Midnight Mint (dunkel + mint)</option>
+        <option value="ocean_copper">Ocean Copper (dunkel + kupfer)</option>
+        <option value="sand_ink">Sand Ink (hell + tiefblau)</option>
+        <option value="forest_rose">Forest Rose (dunkel + rose)</option>
+        <option value="slate_lime">Slate Lime (dunkel + lime)</option>
+        <option value="custom">Eigene Farben</option>
+      </select>
+
+      
+
+      <div class="theme-row" style="margin-top:10px">
+        <div style="flex:1;min-width:240px">
+          <label>Auto-Harmonie aus Primary</label>
+          <select id="harmonyMode">
+            <option value="complementary">Komplementär (Primary + Gegenfarbe)</option>
+            <option value="split">Split-Komplementär (2 Akzente)</option>
+            <option value="triad">Triade (3er-Set)</option>
+            <option value="analogous">Analog (benachbart)</option>
+            <option value="mono">Monochrom (Tints/Shades)</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;align-items:end">
+          <button type="button" class="btn-soft" id="btnAutoHarmony">Auto anwenden</button>
+        </div>
+      </div>
+
+      <div class="theme-actions">
+        
+        <button type="button" class="btn-soft" id="btnFixContrast">Kontrast reparieren</button>
+<button type="button" class="btn-soft" id="btnCopyTheme">Theme JSON kopieren</button>
+        <button type="button" class="btn-soft" id="btnSaveTheme">Theme als Datei speichern</button>
+      </div>
+
+<div class="theme-grid" style="margin-top:10px">
+        <div class="card" style="background:#fff">
+          <h3 style="margin:0 0 8px;font-size:14px">Farben anpassen</h3>
+
+          <div class="row">
+            <div>
+              <label>Primary (Buttons) <span class="hint">HEX / RGB</span></label>
+              <div class="row">
+                <input id="cPrimary" type="color" value="#0f172a" aria-label="Primary Farbe">
+                <input id="rgbPrimary" placeholder="rgb(15, 23, 42)">
+              
+                <div class="warn" id="warnPrimary"><span class="dot" id="dotPrimary"></span><span id="txtPrimary">Kontrast wird geprüft…</span></div>
+</div>
+            </div>
+            <div>
+              <label>Accent (Highlights) <span class="hint">HEX / RGB</span></label>
+              <div class="row">
+                <input id="cAccent" type="color" value="#22c55e" aria-label="Accent Farbe">
+                <input id="rgbAccent" placeholder="rgb(34, 197, 94)">
+              
+                <div class="warn" id="warnAccent"><span class="dot" id="dotAccent"></span><span id="txtAccent">Kontrast wird geprüft…</span></div>
+</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Background (Seite) <span class="hint">HEX / RGB</span></label>
+              <div class="row">
+                <input id="cBg" type="color" value="#ffffff" aria-label="Background Farbe">
+                <input id="rgbBg" placeholder="rgb(255, 255, 255)">
+              
+                <div class="warn" id="warnBg"><span class="dot" id="dotBg"></span><span id="txtBg">Kontrast wird geprüft…</span></div>
+</div>
+            </div>
+            <div>
+              <label>Text (Foreground) <span class="hint">HEX / RGB</span></label>
+              <div class="row">
+                <input id="cFg" type="color" value="#0f172a" aria-label="Text Farbe">
+                <input id="rgbFg" placeholder="rgb(15, 23, 42)">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Card (Flächen)</label>
+              <div class="row">
+                <input id="cCard" type="color" value="#f8fafc" aria-label="Card Farbe">
+                <input id="rgbCard" placeholder="rgb(248, 250, 252)">
+              </div>
+            </div>
+            <div>
+              <label>Border (Linien)</label>
+              <div class="row">
+                <input id="cBorder" type="color" value="#e2e8f0" aria-label="Border Farbe">
+                <input id="rgbBorder" placeholder="rgb(226, 232, 240)">
+              </div>
+            </div>
+          </div>
+
+          <div class="hint">
+            Tipp: Du kannst RGB direkt eingeben, z.B. <b>rgb(12, 74, 110)</b>. HEX wird automatisch synchronisiert.
+          </div>
+        </div>
+
+        <div class="card" style="background:transparent;border:0;padding:0">
+          <div class="mini-card" id="themePreviewCard">
+            <div class="swatch"><span class="chip" id="chipPrimary"></span><span class="mini-pill">Primary</span></div>
+            <div class="swatch" style="margin-top:8px"><span class="chip" id="chipAccent"></span><span class="mini-pill">Accent</span></div>
+
+            <p class="mini-title" style="margin-top:12px">Live Vorschau</p>
+            <p class="mini-muted">So wirken Button, Highlight und Card-Flächen mit deinem Theme.</p>
+
+            <div class="mini-btns">
+              <button type="button" class="mini-btn primary">Primary Button</button>
+              <button type="button" class="mini-btn accent">Accent Button</button>
+            </div>
+
+            <div style="margin-top:12px">
+              <span class="mini-pill">Badge</span>
+              <span class="mini-pill" style="margin-left:6px">Chip</span>
+            </div>
+          
+          <div class="site-preview" id="sitePreview" style="margin-top:12px">
+            <div class="pv-top">
+              <div class="pv-brand"><span class="pv-dot"></span><span id="pvBrandName">Dein Brand</span></div>
+              <div class="pv-nav">
+                <span>Leistungen</span><span>Über uns</span><span>Kontakt</span><span>FAQ</span>
+              </div>
+            </div>
+
+            <div class="pv-hero">
+              <p class="pv-kicker">München · Dachau · Umgebung</p>
+              <h3 class="pv-h1" id="pvH1">Professionell. Sauber. Schnell.</h3>
+              <p class="pv-p" id="pvLead">So wirkt dein Theme später auf einer echten Seite: Header, Buttons, Cards & Footer.</p>
+              <div class="pv-actions">
+                <button type="button" class="pv-btn primary">Anfrage senden</button>
+                <button type="button" class="pv-btn accent">Preise ansehen</button>
+              </div>
+            </div>
+
+            <div class="pv-grid">
+              <div class="pv-card">
+                <h4>Leistung 1</h4>
+                <p>Kurzer Text. Cards nutzen <b>card</b> + <b>border</b> Tokens.</p>
+              </div>
+              <div class="pv-card">
+                <h4>Leistung 2</h4>
+                <p>Accent für Highlights. Primary für CTAs.</p>
+              </div>
+            </div>
+
+            <div class="pv-foot">
+              <span>© <span id="pvBrandName2">Dein Brand</span></span>
+              <span>Impressum · Datenschutz</span>
+            </div>
+          </div>
+
+</div>
+          <p class="hint" style="margin-top:10px">
+            Vorschau ist <b>1:1</b> so gedacht wie dein späteres Template-Layout (Tokens: bg/fg/card/border/primary/accent).
+          </p>
+        </div>
+      </div>
+
+<div class="divider"></div>
 
       <label>Google Business Kategorie <span class="req">*</span></label>
       <input id="gbpCategory" placeholder="Gebäudereinigungsdienst">
@@ -336,8 +591,8 @@
               <label><input type="checkbox" id="showContact" checked> Kontakt im Menü anzeigen</label>
             </div>
             <div>
-              <label><input type="checkbox" id="buildFaq" checked> FAQ Seite bauen</label>
-              <label><input type="checkbox" id="showFaq" checked> FAQ im Menü anzeigen (nur wenn FAQs existieren)</label>
+              <label><input type="checkbox" id="buildFaq"> FAQ Seite bauen</label>
+              <label><input type="checkbox" id="showFaq"> FAQ im Menü anzeigen (nur wenn FAQs existieren)</label>
             </div>
           </div>
         </details>
@@ -434,6 +689,433 @@
 const $ = (id) => document.getElementById(id);
 
 const LIMITS = { logo: 300*1024, og: 500*1024, hero: 800*1024, favicon: 200*1024, serviceImg: 600*1024 };
+
+/* ===========================
+   Theme Presets + Live Preview
+=========================== */
+const THEME_PRESETS = {
+  midnight_mint: { bg:"#0b1220", fg:"#e5e7eb", muted:"#9ca3af", card:"#0f172a", border:"#243044", primary:"#22c55e", accent:"#38bdf8" },
+  ocean_copper:  { bg:"#0b1220", fg:"#e5e7eb", muted:"#a3a3a3", card:"#0f172a", border:"#243044", primary:"#f97316", accent:"#22c55e" },
+  sand_ink:      { bg:"#ffffff", fg:"#0f172a", muted:"#475569", card:"#f8fafc", border:"#e2e8f0", primary:"#0f172a", accent:"#f59e0b" },
+  forest_rose:   { bg:"#0b1220", fg:"#e5e7eb", muted:"#9ca3af", card:"#0f172a", border:"#243044", primary:"#22c55e", accent:"#fb7185" },
+  slate_lime:    { bg:"#0b1220", fg:"#e5e7eb", muted:"#9ca3af", card:"#0f172a", border:"#243044", primary:"#a3e635", accent:"#60a5fa" },
+};
+
+function hexToRgb(hex){
+  const h = (hex||"").replace("#","").trim();
+  if(h.length!==6) return null;
+  const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+  if([r,g,b].some(n=>Number.isNaN(n))) return null;
+  return {r,g,b};
+}
+function rgbToHex(r,g,b){
+  const to = (n)=> Math.max(0,Math.min(255,parseInt(n,10)||0)).toString(16).padStart(2,"0");
+  return "#" + to(r) + to(g) + to(b);
+}
+function parseRgbString(s){
+  const m = (s||"").trim().match(/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i);
+  if(!m) return null;
+  return {r:+m[1], g:+m[2], b:+m[3]};
+}
+function setRgbInput(rgbId, hex){
+  const rgb = hexToRgb(hex);
+  if(!rgb) return;
+  const el = $(rgbId);
+  if(el) el.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+}
+
+function bestOnColor(hex){
+  const rgb = hexToRgb(hex);
+  if(!rgb) return "#ffffff";
+  const lum = (0.2126*rgb.r + 0.7152*rgb.g + 0.0722*rgb.b) / 255;
+  return lum > 0.6 ? "#0f172a" : "#ffffff";
+}
+
+function applyTheme(theme){
+  document.documentElement.style.setProperty("--bg", theme.bg);
+  document.documentElement.style.setProperty("--fg", theme.fg);
+  document.documentElement.style.setProperty("--muted", theme.muted || "#64748b");
+  document.documentElement.style.setProperty("--card", theme.card);
+  document.documentElement.style.setProperty("--border", theme.border);
+  document.documentElement.style.setProperty("--primary", theme.primary);
+  document.documentElement.style.setProperty("--accent", theme.accent);
+  document.documentElement.style.setProperty("--onPrimary", bestOnColor(theme.primary));
+  document.documentElement.style.setProperty("--onAccent", bestOnColor(theme.accent));
+
+  const cp = $("chipPrimary"); if(cp) cp.style.background = theme.primary;
+  const ca = $("chipAccent"); if(ca) ca.style.background = theme.accent;
+}
+
+function getThemeFromInputs(){
+  return {
+    bg: $("cBg").value,
+    fg: $("cFg").value,
+    muted: "#64748b",
+    card: $("cCard").value,
+    border: $("cBorder").value,
+    primary: $("cPrimary").value,
+    accent: $("cAccent").value,
+  };
+}
+
+function syncRgbFromHex(){
+  setRgbInput("rgbPrimary", $("cPrimary").value);
+  setRgbInput("rgbAccent", $("cAccent").value);
+  setRgbInput("rgbBg", $("cBg").value);
+  setRgbInput("rgbFg", $("cFg").value);
+  setRgbInput("rgbCard", $("cCard").value);
+  setRgbInput("rgbBorder", $("cBorder").value);
+}
+
+function syncHexFromRgb(){
+  const map = [
+    ["rgbPrimary","cPrimary"],
+    ["rgbAccent","cAccent"],
+    ["rgbBg","cBg"],
+    ["rgbFg","cFg"],
+    ["rgbCard","cCard"],
+    ["rgbBorder","cBorder"],
+  ];
+  for(const [rgbId, colorId] of map){
+    const parsed = parseRgbString($(rgbId).value);
+    if(parsed){
+      $(colorId).value = rgbToHex(parsed.r, parsed.g, parsed.b);
+    }
+  }
+}
+
+function initThemePicker(){
+  if(!$("themePreset")) return;
+
+  const applyPreset = (key) => {
+    const t = THEME_PRESETS[key];
+    if(!t) return;
+    $("cBg").value = t.bg;
+    $("cFg").value = t.fg;
+    $("cCard").value = t.card;
+    $("cBorder").value = t.border;
+    $("cPrimary").value = t.primary;
+    $("cAccent").value = t.accent;
+    syncRgbFromHex();
+    applyTheme(t);
+  };
+
+  $("themePreset").addEventListener("change", ()=>{
+    const v = $("themePreset").value;
+    if(v !== "custom") applyPreset(v);
+    refresh();
+  });
+
+  ["cPrimary","cAccent","cBg","cFg","cCard","cBorder"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{
+      syncRgbFromHex();
+      applyTheme(getThemeFromInputs());
+      $("themePreset").value = "custom";
+      refresh();
+    });
+  });
+
+  ["rgbPrimary","rgbAccent","rgbBg","rgbFg","rgbCard","rgbBorder"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{
+      syncHexFromRgb();
+      applyTheme(getThemeFromInputs());
+      $("themePreset").value = "custom";
+      refresh();
+    });
+  });
+
+  $("themePreset").value = "sand_ink";
+  applyPreset("sand_ink");
+  // Harmony + Actions
+  try{
+    $("btnAutoHarmony").addEventListener("click", applyHarmony);
+    $("btnCopyTheme").addEventListener("click", copyThemeJson);
+    $("btnSaveTheme").addEventListener("click", saveThemeJson);
+  
+    $("btnFixContrast").addEventListener("click", fixContrast);
+}catch(e){}
+  // Initial contrast check
+  try{ updateContrastUI(); }catch(e){}
+
+  refresh();
+}
+
+
+/* ===========================
+   Theme: Harmonies + Contrast + Save/Copy
+=========================== */
+function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+function hexToLin(hex){
+  const rgb = hexToRgb(hex); if(!rgb) return null;
+  const toLin = (v)=>{ v/=255; return v<=0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); };
+  return { r: toLin(rgb.r), g: toLin(rgb.g), b: toLin(rgb.b) };
+}
+function contrastRatio(aHex,bHex){
+  const a = hexToLin(aHex), b = hexToLin(bHex);
+  if(!a||!b) return 1;
+  const L = (c)=> 0.2126*c.r + 0.7152*c.g + 0.0722*c.b;
+  const L1 = L(a), L2 = L(b);
+  const hi = Math.max(L1,L2), lo = Math.min(L1,L2);
+  return (hi+0.05)/(lo+0.05);
+}
+function setWarn(dotId, txtId, ratio, target){
+  const dot = $(dotId), txt = $(txtId);
+  if(!dot || !txt) return;
+  const r = Number(ratio||0);
+  const t = target || 4.5;
+  let cls = "bad", msg = `Kontrast ${r.toFixed(2)}:1 – schlecht`;
+  if(r >= t){ cls="ok"; msg = `Kontrast ${r.toFixed(2)}:1 – ok`; }
+  else if(r >= 3){ cls="mid"; msg = `Kontrast ${r.toFixed(2)}:1 – mittel (für große Schrift ok)`; }
+  dot.className = "dot " + cls;
+  txt.textContent = msg;
+}
+
+function rgbToHsl(r,g,b){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){ h=s=0; }
+  else{
+    const d=max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h=(g-b)/d + (g<b?6:0); break;
+      case g: h=(b-r)/d + 2; break;
+      case b: h=(r-g)/d + 4; break;
+    }
+    h/=6;
+  }
+  return {h,s,l};
+}
+function hslToRgb(h,s,l){
+  const hue2rgb=(p,q,t)=>{
+    if(t<0) t+=1; if(t>1) t-=1;
+    if(t<1/6) return p+(q-p)*6*t;
+    if(t<1/2) return q;
+    if(t<2/3) return p+(q-p)*(2/3 - t)*6;
+    return p;
+  };
+  let r,g,b;
+  if(s===0){ r=g=b=l; }
+  else{
+    const q = l<0.5 ? l*(1+s) : l+s-l*s;
+    const p = 2*l-q;
+    r = hue2rgb(p,q,h+1/3);
+    g = hue2rgb(p,q,h);
+    b = hue2rgb(p,q,h-1/3);
+  }
+  return {r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255)};
+}
+function rotateHue(hex, deg){
+  const rgb = hexToRgb(hex); if(!rgb) return hex;
+  const hsl = rgbToHsl(rgb.r,rgb.g,rgb.b);
+  hsl.h = (hsl.h + (deg/360)) % 1;
+  const out = hslToRgb(hsl.h, hsl.s, hsl.l);
+  return rgbToHex(out.r,out.g,out.b);
+}
+function tweakLight(hex, delta){
+  const rgb = hexToRgb(hex); if(!rgb) return hex;
+  const hsl = rgbToHsl(rgb.r,rgb.g,rgb.b);
+  hsl.l = clamp01(hsl.l + delta);
+  const out = hslToRgb(hsl.h,hsl.s,hsl.l);
+  return rgbToHex(out.r,out.g,out.b);
+}
+
+function applyHarmony(){
+  const mode = $("harmonyMode")?.value || "complementary";
+  const primary = $("cPrimary")?.value || "#0f172a";
+
+  // base derived colors
+  let accent = rotateHue(primary, 180);
+  let bg = ($("cBg")?.value || "#ffffff");
+  let fg = ($("cFg")?.value || "#0f172a");
+
+  if(mode==="split"){
+    // pick one split-complement for accent and set border/card gently
+    accent = rotateHue(primary, 150);
+  } else if(mode==="triad"){
+    accent = rotateHue(primary, 120);
+  } else if(mode==="analogous"){
+    accent = rotateHue(primary, 30);
+  } else if(mode==="mono"){
+    accent = tweakLight(primary, 0.18);
+  }
+
+  // Choose sensible bg/fg based on primary luminance
+  const onP = bestOnColor(primary);
+  if(onP === "#ffffff"){
+    // primary is dark -> allow dark theme by default
+    bg = "#0b1220";
+    fg = "#e5e7eb";
+  }else{
+    bg = "#ffffff";
+    fg = "#0f172a";
+  }
+
+  // Cards/borders
+  const card = (bg === "#ffffff") ? "#f8fafc" : "#0f172a";
+  const border = (bg === "#ffffff") ? "#e2e8f0" : "#243044";
+
+  $("cAccent").value = accent;
+  $("cBg").value = bg;
+  $("cFg").value = fg;
+  $("cCard").value = card;
+  $("cBorder").value = border;
+
+  syncRgbFromHex();
+  applyTheme(getThemeFromInputs());
+  $("themePreset").value = "custom";
+  refresh();
+}
+
+function updateContrastUI(){
+  const primary = $("cPrimary")?.value || "#000000";
+  const accent = $("cAccent")?.value || "#000000";
+  const bg = $("cBg")?.value || "#ffffff";
+  const fg = $("cFg")?.value || "#000000";
+
+  const onPrimary = getComputedStyle(document.documentElement).getPropertyValue("--onPrimary").trim() || bestOnColor(primary);
+  const onAccent  = getComputedStyle(document.documentElement).getPropertyValue("--onAccent").trim()  || bestOnColor(accent);
+
+  setWarn("dotPrimary","txtPrimary", contrastRatio(primary,onPrimary), 4.5);
+  setWarn("dotAccent","txtAccent", contrastRatio(accent,onAccent), 4.5);
+  setWarn("dotBg","txtBg", contrastRatio(bg,fg), 4.5);
+}
+
+async function copyThemeJson(){
+  const t = getThemeFromInputs();
+  const payload = {
+    preset: $("themePreset")?.value || "custom",
+    harmony: $("harmonyMode")?.value || "",
+    ...t,
+    onPrimary: getComputedStyle(document.documentElement).getPropertyValue("--onPrimary").trim() || bestOnColor(t.primary),
+    onAccent: getComputedStyle(document.documentElement).getPropertyValue("--onAccent").trim() || bestOnColor(t.accent),
+    rgb: {
+      primary: $("rgbPrimary")?.value || "",
+      accent: $("rgbAccent")?.value || "",
+      bg: $("rgbBg")?.value || "",
+      fg: $("rgbFg")?.value || "",
+      card: $("rgbCard")?.value || "",
+      border: $("rgbBorder")?.value || ""
+    }
+  };
+  const text = JSON.stringify(payload, null, 2);
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("Theme JSON kopiert ✅");
+  }catch(e){
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy");
+    ta.remove();
+    toast("Theme JSON kopiert ✅");
+  }
+}
+
+function saveThemeJson(){
+  const t = getThemeFromInputs();
+  const payload = {
+    preset: $("themePreset")?.value || "custom",
+    harmony: $("harmonyMode")?.value || "",
+    ...t,
+    onPrimary: getComputedStyle(document.documentElement).getPropertyValue("--onPrimary").trim() || bestOnColor(t.primary),
+    onAccent: getComputedStyle(document.documentElement).getPropertyValue("--onAccent").trim() || bestOnColor(t.accent),
+    rgb: {
+      primary: $("rgbPrimary")?.value || "",
+      accent: $("rgbAccent")?.value || "",
+      bg: $("rgbBg")?.value || "",
+      fg: $("rgbFg")?.value || "",
+      card: $("rgbCard")?.value || "",
+      border: $("rgbBorder")?.value || ""
+    }
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "theme.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  toast("theme.json gespeichert ✅");
+}
+
+
+function adjustForContrast(bgHex, targetTextHex, target=4.5){
+  // Adjust bg (color) lightness until contrast with targetTextHex meets target
+  let cur = bgHex;
+  let r = contrastRatio(cur, targetTextHex);
+  if(r >= target) return cur;
+
+  // decide direction: if text is white, darken bg; if text is dark, lighten bg
+  const dir = (targetTextHex.toLowerCase() === "#ffffff") ? -1 : 1;
+  // step in HSL lightness
+  for(let i=0;i<30;i++){
+    const delta = dir * 0.02; // 2% per step
+    cur = tweakLight(cur, delta);
+    r = contrastRatio(cur, targetTextHex);
+    if(r >= target) break;
+  }
+  return cur;
+}
+
+function fixContrast(){
+  try{
+    // Primary
+    const primary = $("cPrimary")?.value || "#0f172a";
+    let onPrimary = bestOnColor(primary);
+    let fixedPrimary = primary;
+
+    // If still bad, nudge primary lightness toward valid
+    if(contrastRatio(primary, onPrimary) < 4.5){
+      fixedPrimary = adjustForContrast(primary, onPrimary, 4.5);
+      $("cPrimary").value = fixedPrimary;
+      onPrimary = bestOnColor(fixedPrimary);
+    }
+
+    // Accent
+    const accent = $("cAccent")?.value || "#22c55e";
+    let onAccent = bestOnColor(accent);
+    let fixedAccent = accent;
+
+    if(contrastRatio(accent, onAccent) < 4.5){
+      fixedAccent = adjustForContrast(accent, onAccent, 4.5);
+      $("cAccent").value = fixedAccent;
+      onAccent = bestOnColor(fixedAccent);
+    }
+
+    // Background / Foreground
+    const bg = $("cBg")?.value || "#ffffff";
+    let fg = $("cFg")?.value || "#0f172a";
+    if(contrastRatio(bg, fg) < 4.5){
+      // choose best fg for bg
+      fg = bestOnColor(bg);
+      $("cFg").value = fg;
+    }
+
+    // Card / Border sanity (optional): keep border visible against card
+    const card = $("cCard")?.value || "#f8fafc";
+    let border = $("cBorder")?.value || "#e2e8f0";
+    if(contrastRatio(card, border) < 1.3){
+      // push border slightly away from card
+      border = adjustForContrast(border, bestOnColor(card), 2.0);
+      $("cBorder").value = border;
+    }
+
+    // Sync inputs, apply theme
+    syncRgbFromHex();
+    applyTheme(getThemeFromInputs());
+    $("themePreset").value = "custom";
+    refresh();
+    toast("Kontrast repariert ✅");
+  }catch(e){
+    toast("Kontrast-Reparatur fehlgeschlagen");
+  }
+}
+
+
+
 
 function baseUrlFromDomain(domain){
   if(!domain) return "";
@@ -715,7 +1397,29 @@ function buildConfig(){
     },
     schema: { type: "LocalBusiness" },
 
-    home: {
+    
+
+    theme: {
+      preset: ($("themePreset")?.value || "custom"),
+      bg: $("cBg")?.value || "#ffffff",
+      fg: $("cFg")?.value || "#0f172a",
+      card: $("cCard")?.value || "#f8fafc",
+      border: $("cBorder")?.value || "#e2e8f0",
+      primary: $("cPrimary")?.value || "#0f172a",
+      accent: $("cAccent")?.value || "#22c55e",
+      onPrimary: getComputedStyle(document.documentElement).getPropertyValue("--onPrimary").trim() || "#ffffff",
+      onAccent: getComputedStyle(document.documentElement).getPropertyValue("--onAccent").trim() || "#0f172a",
+      rgb: {
+        primary: $("rgbPrimary")?.value || "",
+        accent: $("rgbAccent")?.value || "",
+        bg: $("rgbBg")?.value || "",
+        fg: $("rgbFg")?.value || "",
+        card: $("rgbCard")?.value || "",
+        border: $("rgbBorder")?.value || ""
+      }
+    },
+
+home: {
       h1: ($("homeH1").value||"").trim(),
       lead: ($("homeLead").value||"").trim(),
       intro: ($("homeIntro").value||"").trim().replace(/\n/g,"<br>"),
@@ -813,6 +1517,13 @@ function buildConfig(){
       _serviceSlug: s.slug
     };
   }
+  // Auto-Disable FAQ Menü wenn es keine FAQs gibt (damit Export "clean" bleibt)
+  try{
+    const anyFaq = (cfg.services || []).some(s => Array.isArray(s.faq) && s.faq.length);
+    if(!anyFaq){
+      cfg.navigation.show.faq = false;
+    }
+  }catch(e){}
 
   return {cfg, services};
 }
@@ -982,6 +1693,18 @@ function refresh(){
   }catch(e){
     $("preview").textContent = "⚠️ Fehler in Formular-Logik: " + (e?.message || e);
   }
+  // Theme Preview (mini website)
+  try{
+    const b = ($("brandName")?.value || $("brand")?.value || "").trim();
+    const h1 = ($("homeH1")?.value || "").trim();
+    const lead = ($("homeLead")?.value || "").trim();
+
+    if($("pvBrandName")) $("pvBrandName").textContent = b || "Dein Brand";
+    if($("pvBrandName2")) $("pvBrandName2").textContent = b || "Dein Brand";
+    if($("pvH1")) $("pvH1").textContent = h1 || "Professionell. Sauber. Schnell.";
+    if($("pvLead")) $("pvLead").textContent = lead || "So wirkt dein Theme später auf einer echten Seite: Header, Buttons, Cards & Footer.";
+  }catch(e){}
+
 }
 
 function syncBuildToggles(){
@@ -1117,6 +1840,9 @@ npm run build -- --intake intake.zip
    Init (Demo-Services, damit UI sichtbar ist)
 =========================== */
 function initDemo(){
+  // Demo-Services nur auf Wunsch: /?demo=1
+  const params = new URLSearchParams(location.search);
+  if(params.get("demo") !== "1") return;
   if(servicesNodes().length) return;
   addServiceCard({name:"Büro- und Praxisreinigung", menulabel:"Büro & Praxis", snippet:"Gründlich, diskret und zuverlässig – Angebot in 24h."});
   addServiceCard({name:"Glas- und Fensterreinigung", menulabel:"Glasreinigung", snippet:"Streifenfrei, regelmäßig oder einmalig – innen & außen."});
@@ -1132,6 +1858,7 @@ $("homeCtaHref").value = $("homeCtaHref").value || "#anfrage";
 
 syncBuildToggles();
 initDemo();
+initThemePicker();
 refresh();
 </script>
 </body>
