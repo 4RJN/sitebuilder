@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Kunden-Konfigurator – Website Intake</title>
 
-<!-- FAVICONS -->
-<link rel="icon" type="image/png" sizes="512x512" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
-<link rel="icon" type="image/png" sizes="192x192" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
-<link rel="apple-touch-icon" sizes="180x180" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
 
+
+<!-- FAVICONS -->
+<meta name="x-easter-egg" content="&#8203;&#8203;🚀🪄&#8203;&#8203;">
+<link rel="icon" type="image/png" sizes="32x32" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
+<link rel="icon" type="image/png" sizes="512x512" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://4rjn.github.io/sitebuilder/favicon-512.png">
 
 <!-- =========================
  SEO + Social Sharing (WhatsApp/FB/Twitter)
@@ -33,7 +36,22 @@
 <meta name="twitter:image" content="https://4rjn.github.io/sitebuilder/og-image.png">
 
 
-  <style>
+  
+
+<!-- Meta Extras -->
+<meta name="theme-color" content="#0f172a">
+<meta property="og:image:alt" content="Zu viel SEO für ein Formular – 4RJN Sitebuilder">
+<meta property="og:locale" content="de_DE">
+<meta property="og:image:secure_url" content="https://4rjn.github.io/sitebuilder/og-image.png">
+<meta property="og:updated_time" content="2026-01-28T22:46:38Z">
+
+<!-- Optional: Animated OG (nicht überall animiert, aber nice für Preview-Plattformen) -->
+<meta property="og:image" content="https://4rjn.github.io/sitebuilder/og-image.gif">
+<meta property="og:image:type" content="image/gif">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<style>
     :root{
       --bg:#ffffff;--fg:#0f172a;--muted:#475569;--card:#f8fafc;--border:#e2e8f0;
       --good:#16a34a;--bad:#dc2626;--warn:#b45309;
@@ -77,6 +95,29 @@
     .pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:4px 8px;background:#fff}
     .divider{height:1px;background:var(--border);margin:14px 0}
   </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Kunden-Konfigurator – Website Intake (Sitebuilder)",
+  "url": "https://4rjn.github.io/sitebuilder/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "Ein Web-Formular, das Website-Inhalte, SEO, Google Business und Services strukturiert einsammelt und als JSON/ZIP exportiert.",
+  "author": {
+    "@type": "Person",
+    "name": "4RJN"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "softwareVersion": "1.0",
+  "isAccessibleForFree": true
+}
+</script>
 </head>
 <body>
   <h1>Kunden-Konfigurator</h1>
@@ -365,6 +406,28 @@
   </div>
 
 <script>
+
+/* ===========================
+   Secret Emoji Easter Egg
+   Tipp: Tippe schnell "seo" (s-e-o) – dann wird ein magisches Emoji in den Title gemogelt 🪄
+=========================== */
+(() => {
+  const secret = "\u200b\u200b🚀🪄\u200b\u200b";
+  let buf = "";
+  let timer = null;
+  window.addEventListener("keydown", (e) => {
+    const k = (e.key || "").toLowerCase();
+    if (!k || k.length !== 1) return;
+    buf += k;
+    clearTimeout(timer);
+    timer = setTimeout(() => (buf = ""), 700);
+    if (buf.endsWith("seo")) {
+      document.title = document.title.replace(secret, "") + secret;
+      buf = "";
+    }
+  });
+})();
+
 /* ===========================
    Utilities
 =========================== */
@@ -756,15 +819,43 @@ function buildConfig(){
 
 function validateConfig(cfg){
   const missing = [];
-  const must = (p) => {
-    const parts = p.split(".");
-    let cur = cfg;
-    for(const k of parts){
-      if(cur && Object.prototype.hasOwnProperty.call(cur,k)) cur = cur[k];
-      else {cur=null;break;}
+
+  // Support keys that contain dots, e.g. cfg.pages["index.njk"]
+  const getPath = (root, path) => {
+    const parts = path.split(".");
+    let cur = root;
+
+    for (let i = 0; i < parts.length; i++) {
+      if (cur == null) return null;
+
+      const k = parts[i];
+
+      // direct hit
+      if (typeof cur === "object" && Object.prototype.hasOwnProperty.call(cur, k)) {
+        cur = cur[k];
+        continue;
+      }
+
+      // dot-key join (e.g. "index" + "." + "njk" => "index.njk")
+      if (typeof cur === "object" && i + 1 < parts.length) {
+        const joined = k + "." + parts[i + 1];
+        if (Object.prototype.hasOwnProperty.call(cur, joined)) {
+          cur = cur[joined];
+          i++; // skip next part
+          continue;
+        }
+      }
+
+      return null;
     }
-    if(!cur) missing.push(p);
+    return cur;
   };
+
+  const must = (p) => {
+    const v = getPath(cfg, p);
+    if (v === null || v === undefined || v === "") missing.push(p);
+  };
+
   [
     "brand.name","brand.domain","brand.baseUrl",
     "contact.email","contact.phone",
@@ -773,6 +864,7 @@ function validateConfig(cfg){
     "home.h1","home.lead","home.intro",
     "pages.index.njk.title","pages.index.njk.description","pages.index.njk.canonical"
   ].forEach(must);
+
   return {missing};
 }
 
